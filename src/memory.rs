@@ -1,12 +1,12 @@
-
 pub trait Addressable {
     fn read(&self, addr: u16) -> Option<u8>;
     fn write(&mut self, addr: u16, value: u8) -> bool;
+    
     fn read2(&self, addr: u16) -> Option<u16> {
         if let Some(x0) = self.read(addr) {
             if let Some(x1) = self.read(addr + 1) {
                 return Some(x0 as u16 | (x1 as u16) << 8);
-            }
+            }   
         };
         None
     }
