@@ -1,44 +1,25 @@
-enum Register {
+use crate::memory::{Addressable, LinearMemory};
+
+pub enum Register {
     A, B, C, M, SP, PC, BP, FLAGS,
 }
 
-trait Addressable {
-    fn read(&self, addr: u16) -> Option<u8>;
-    fn write(&mut self, addr: u16, value: u8) -> bool;
-    fn read2(&self, addr: u16) -> option<u16> {
-        if let Some(x) = self.read(addr) {
-            if let Some(x) = self.read(addr + 1) {
-                return Some(x0 as u16 | (x1 as u16) << 8);
-            }
-        };
-        None
-    }
-    
-    fn write2(&mut self, addr: u16, value: u16) -> bool {
-        let lower = value & 0xff;
-        let upper = (value & 0xff00) >> 8;
-        self.write(addr, lower) && self.write(addr + 1, upper)
-    }
-    
-    fn copy(&mut self, from: u16, to: u16 , n: uszie) -> bool {
-        
-    }
-}
 
-struct Machine {
+pub struct Machine {
     // 寄存器
-    registers: [u16; 8],
+    pub registers: [u16; 8],
     // 内存
-    memory: [u8; 5000],
+    pub memory: Box<dyn Addressable>,
 }
 
 impl Machine {
     pub fn new() -> Self {
-        Self {registers: [0; 8], memory: [0; 5000]}
+        Self {registers: [0; 8], memory: Box::new(LinearMemory::new(8 * 1024))}
     }
     pub fn step(&mut self) -> Result<(), &'static str> {
-        let pc = self.registers[Register::PC as u16];
-        self.memory.read()
-    }
-    pub fn read()    
+        let pc = self.registers[Register::PC as usize];
+        let instruction = self.memory.read2(pc).unwrap();
+        println!("{} @ {}", instruction, pc);
+        Ok(())
+    }  
 }
