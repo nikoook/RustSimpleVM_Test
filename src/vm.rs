@@ -15,7 +15,9 @@ trait Addressable {
     }
     
     fn write2(&mut self, addr: u16, value: u16) -> bool {
-        let lower = value & 
+        let lower = value & 0xff;
+        let upper = (value & 0xff00) >> 8;
+        self.write(addr, lower) && self.write(addr + 1, upper)
     }
     
     fn copy(&mut self, from: u16, to: u16 , n: uszie) -> bool {
